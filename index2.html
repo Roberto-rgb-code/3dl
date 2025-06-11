@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing 3D Sticky - Demo</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --main-color: #1CAAD9;
+      --bg-dark: #090b13;
+      --text-light: #fff;
+      --section-spacing: 80px;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-dark);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-light);
+      scroll-behavior: smooth;
+    }
+    section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--section-spacing) 24px;
+      box-sizing: border-box;
+      position: relative;
+      z-index: 1;
+    }
+    .hero {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      min-height: 90vh;
+      gap: 48px;
+      padding-top: 60px;
+      padding-bottom: 60px;
+      position: relative;
+    }
+    .hero-content {
+      flex: 1 1 0;
+      z-index: 2;
+      max-width: 520px;
+    }
+    .hero-content h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+    .hero-content p {
+      font-size: 1.25rem;
+      color: #c8e6fa;
+      margin-bottom: 2rem;
+    }
+    .cta-btn {
+      background: var(--main-color);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 0.9rem 2.5rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+      box-shadow: 0 4px 20px #1CAAD955;
+      cursor: pointer;
+      transition: background 0.18s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .cta-btn:hover {
+      background: #188bb0;
+    }
+    .sticky-model-container {
+      flex: 1 1 0;
+      min-width: 340px;
+      max-width: 520px;
+      height: 70vh;
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sticky-model {
+      position: sticky;
+      top: 5vh;
+      width: 100%;
+      height: 65vh;
+      border-radius: 18px;
+      box-shadow: 0 4px 40px #1CAAD966;
+      background: #000;
+      overflow: hidden;
+      z-index: 3;
+      /* Para efecto flotante, puedes agregarle un filtro: */
+      filter: drop-shadow(0 8px 36px #1CAAD944);
+      /* Animación leve: */
+      animation: floaty 4s ease-in-out infinite alternate;
+    }
+    @keyframes floaty {
+      0% { transform: translateY(0px);}
+      100% { transform: translateY(15px);}
+    }
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 18px;
+    }
+
+    /* Secciones adicionales */
+    .section-title {
+      font-size: 2.1rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .features-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    .feature-card {
+      background: #121826;
+      padding: 2rem 1.5rem;
+      border-radius: 16px;
+      flex: 1 1 260px;
+      min-width: 220px;
+      box-shadow: 0 2px 16px #1caad933;
+      color: #e3eefa;
+    }
+    .feature-card h3 {
+      margin-top: 0;
+      color: var(--main-color);
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+    .feature-card p {
+      margin-bottom: 0;
+      font-size: 1.07rem;
+    }
+    .cta-section {
+      text-align: center;
+      margin-top: 70px;
+      margin-bottom: 60px;
+    }
+    .cta-section h2 {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .cta-section p {
+      font-size: 1.2rem;
+      color: #b4e2f8;
+      margin-bottom: 2rem;
+    }
+
+    footer {
+      background: #0c111b;
+      color: #85b2c9;
+      text-align: center;
+      padding: 1.4rem 0;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+      margin-top: 0;
+    }
+
+    @media (max-width: 950px) {
+      .hero {
+        flex-direction: column-reverse;
+        padding: 32px 4vw 32px 4vw;
+      }
+      .sticky-model-container, .hero-content {
+        max-width: 95vw;
+      }
+      .sticky-model {
+        height: 44vh;
+        min-width: 240px;
+      }
+    }
+    @media (max-width: 700px) {
+      .section-title { font-size: 1.4rem;}
+      .hero-content h1 { font-size: 1.7rem;}
+      .cta-section h2 { font-size: 1.25rem;}
+      .sticky-model { height: 30vh; min-width: 120px;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Explora tu Futuro Digital</h1>
+      <p>
+        Descubre nuestra revolucionaria computadora 3D en tiempo real.<br>
+        Interactúa, observa cada detalle y vive la experiencia más inmersiva del mercado.
+      </p>
+      <a href="#contacto" class="cta-btn">¡Quiero saber más!</a>
+    </div>
+    <div class="sticky-model-container">
+      <div class="sticky-model">
+        <model-viewer 
+          src="dream_computer_setup.glb"
+          autoplay 
+          camera-controls 
+          disable-zoom 
+          disable-pan 
+          ar 
+          exposure="1"
+          shadow-intensity="1"
+          style="background: #000;">
+        </model-viewer>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section id="caracteristicas">
+    <div class="section-title">¿Por qué elegir esta computadora?</div>
+    <div class="features-list">
+      <div class="feature-card">
+        <h3>Diseño Futurista</h3>
+        <p>Chasis iluminado, componentes premium y estética minimalista para los más exigentes.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Rendimiento Extremo</h3>
+        <p>Procesadores y gráficos de última generación, optimizados para inteligencia artificial y gaming.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Personalización Total</h3>
+        <p>Configura cada aspecto: colores, módulos, iluminación y más. Hazla tuya.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Sostenibilidad</h3>
+        <p>Fabricada con materiales reciclados y eficiencia energética A+++.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALL TO ACTION SECTION -->
+  <section class="cta-section" id="contacto">
+    <h2>¿Listo para el siguiente nivel?</h2>
+    <p>
+      Contáctanos y lleva tu experiencia tecnológica más allá de la imaginación.<br>
+      ¡Crea, juega y trabaja con el poder del 3D en tus manos!
+    </p>
+    <a href="mailto:info@tuempresa.com" class="cta-btn">Contactar ahora</a>
+  </section>
+
+  <footer>
+    &copy; 2025 Computadora 3D Demo — Hecho con <span style="color:#1CAAD9;">&#10084;</span> por tu equipo.
+  </footer>
+</body>
+</html>

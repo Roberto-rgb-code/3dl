@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Landing Hero + Three.js Gaming PC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Model-viewer para el hero principal -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <!-- Three.js y GLTFLoader para el modelo gaming -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/examples/js/controls/OrbitControls.js"></script>
+  <style>
+    :root {
+      --main-color: #1CAAD9;
+      --cta-gaming: #fd286f;
+      --bg-dark: #090b13;
+      --text-light: #fff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+    .hero, .gaming-section {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 56px;
+      padding: 0 6vw;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-3d {
+      flex: 1 1 520px;
+      max-width: 700px;
+      min-width: 280px;
+      height: 72vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      --progress-bar-color: #1CAAD9;
+      --poster-color: transparent;
+      border-radius: 22px;
+      box-shadow: 0 6px 54px #1CAAD922;
+    }
+    .hero-content, .gaming-content {
+      flex: 1 1 340px;
+      max-width: 540px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.1rem;
+    }
+    .hero-content h1, .gaming-content h2 {
+      font-size: 2.7rem;
+      margin: 0 0 1rem 0;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+    .hero-content p, .gaming-content p {
+      font-size: 1.25rem;
+      color: #c8e6fa;
+      margin: 0 0 2rem 0;
+      line-height: 1.45;
+    }
+    .cta-btn, .gaming-cta-btn {
+      background: var(--main-color);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 0.9rem 2.5rem;
+      font-size: 1.13rem;
+      font-weight: 700;
+      box-shadow: 0 4px 20px #1CAAD955;
+      cursor: pointer;
+      transition: background 0.18s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .cta-btn:hover { background: #188bb0; }
+    .gaming-cta-btn {
+      background: var(--cta-gaming);
+      font-size: 1.23rem;
+      font-weight: 800;
+      box-shadow: 0 4px 28px #fd286f55;
+      letter-spacing: 0.04em;
+      margin-top: 0.6rem;
+    }
+    .gaming-cta-btn:hover { background: #c01e50; }
+    .gaming-content h2 {
+      font-size: 2.1rem;
+      margin-bottom: 1.1rem;
+      color: #fff;
+    }
+    .gaming-3d-canvas-wrapper {
+      flex: 1 1 700px;
+      max-width: 900px;
+      height: 86vh;
+      min-width: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      background: #000;
+      border-radius: 22px;
+      box-shadow: 0 6px 54px #1CAAD922;
+      position: relative;
+    }
+    #gaming-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #000;
+      border-radius: 22px;
+      outline: none;
+    }
+    @media (max-width: 1200px) {
+      .hero, .gaming-section { gap: 22px; }
+      .hero-3d, .gaming-3d-canvas-wrapper { max-width: 95vw; }
+    }
+    @media (max-width: 900px) {
+      .hero, .gaming-section {
+        flex-direction: column;
+        justify-content: flex-start;
+        min-height: unset;
+        padding: 7vw 0 4vw 0;
+        gap: 16px;
+      }
+      .hero-3d, .gaming-3d-canvas-wrapper, .hero-content, .gaming-content { max-width: 96vw; }
+      .hero-3d { height: 50vw; min-height: 170px;}
+      .gaming-3d-canvas-wrapper { height: 58vw; min-height: 220px; }
+      .hero-content h1, .gaming-content h2 { font-size: 1.7rem;}
+      .hero-content p, .gaming-content p { font-size: 1rem;}
+    }
+    @media (max-width: 600px) {
+      .hero, .gaming-section { padding: 0 1vw; }
+      .hero-3d, .gaming-3d-canvas-wrapper { height: 44vw; min-height: 100px;}
+      .hero-content, .gaming-content { max-width: 99vw; }
+    }
+    footer {
+      background: #0c111b;
+      color: #85b2c9;
+      text-align: center;
+      padding: 1.2rem 0 0.8rem 0;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO con primer animación a la IZQUIERDA -->
+  <section class="hero">
+    <div class="hero-3d">
+      <model-viewer 
+        src="dream_computer_setup.glb"
+        autoplay 
+        camera-controls
+        disable-zoom
+        disable-pan
+        exposure="1"
+        shadow-intensity="1"
+        style="background: transparent;">
+      </model-viewer>
+    </div>
+    <div class="hero-content">
+      <h1>Explora la Computadora del Futuro</h1>
+      <p>
+        Interactúa con nuestro setup soñado en 3D, arrastra para girar y vive la innovación como nunca antes.<br>
+        Tecnología, diseño y potencia en una sola experiencia visual.
+      </p>
+      <a href="#gaming" class="cta-btn">Descubre más abajo</a>
+    </div>
+  </section>
+
+  <!-- Sección Gaming: animación grande a la izquierda con Three.js -->
+  <section id="gaming" class="gaming-section">
+    <div class="gaming-3d-canvas-wrapper">
+      <canvas id="gaming-canvas" tabindex="0"></canvas>
+    </div>
+    <div class="gaming-content">
+      <h2>¿Listo para una experiencia gaming épica?</h2>
+      <p>
+        Sumérgete en el poder de la próxima generación. Nuestro gaming PC 3D te espera con lo último en hardware y una experiencia visual envolvente.<br>
+        ¡Vive el gaming sin límites!
+      </p>
+      <a href="mailto:info@tuempresa.com" class="gaming-cta-btn">
+        ¡Quiero mi Gaming PC!
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Dual 3D Landing — Demo por tu equipo.
+  </footer>
+
+  <!-- THREE.JS para gaming-pc.glb -->
+  <script>
+    // Ajusta la ruta a tu modelo GLB si es necesario:
+    const MODEL_URL = 'gaming-pc.glb';
+    // Elementos
+    const canvas = document.getElementById('gaming-canvas');
+    let renderer, scene, camera, controls, mixer, clock, model;
+    let autoRotate = false;
+
+    function initThree() {
+      // RENDERER
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setClearColor(0x000000, 1);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+
+      // SCENE
+      scene = new THREE.Scene();
+
+      // CAMERA
+      const aspect = canvas.clientWidth / canvas.clientHeight;
+      camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
+      camera.position.set(1.8, 1.4, 3.5);
+
+      // LIGHTS
+      scene.add(new THREE.AmbientLight(0xffffff, 1));
+      const dLight = new THREE.DirectionalLight(0xffffff, 2.2);
+      dLight.position.set(2, 7, 5);
+      scene.add(dLight);
+
+      // CONTROLS
+      controls = new THREE.OrbitControls(camera, canvas);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.enableZoom = false;
+      controls.enablePan = false;
+      controls.minPolarAngle = Math.PI * 0.15;
+      controls.maxPolarAngle = Math.PI * 0.75;
+      controls.autoRotate = false;
+      controls.autoRotateSpeed = 1.5;
+
+      // GLTF LOADER
+      const loader = new THREE.GLTFLoader();
+      loader.load(MODEL_URL, gltf => {
+        model = gltf.scene;
+        scene.add(model);
+
+        // Animación si existe
+        if (gltf.animations && gltf.animations.length > 0) {
+          mixer = new THREE.AnimationMixer(model);
+          gltf.animations.forEach(clip => {
+            mixer.clipAction(clip).play();
+          });
+        }
+      });
+
+      // CLOCK
+      clock = new THREE.Clock();
+
+      // Resize
+      window.addEventListener('resize', onWindowResize, false);
+    }
+
+    function onWindowResize() {
+      const w = canvas.parentElement.clientWidth;
+      const h = canvas.parentElement.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (mixer) mixer.update(clock.getDelta());
+      controls.autoRotate = autoRotate;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Mouse enter/leave para activar/desactivar auto-rotate
+    canvas.addEventListener('mouseenter', () => { autoRotate = true; });
+    canvas.addEventListener('mouseleave', () => { autoRotate = false; });
+    // Para touch (móviles/tablets)
+    canvas.addEventListener('touchstart', () => { autoRotate = true; });
+    canvas.addEventListener('touchend', () => { autoRotate = false; });
+
+    // Inicialización al cargar
+    function startThree() {
+      initThree();
+      onWindowResize();
+      animate();
+    }
+    // Esperar a que esté renderizado el canvas
+    window.addEventListener('DOMContentLoaded', startThree);
+  </script>
+</body>
+</html>

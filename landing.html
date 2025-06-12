@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SR Digital Pro - Transformación Digital</title>
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+        
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #ff0050;
+            --primary-dark: #cc0040;
+            --secondary: #00d4ff;
+            --accent: #7c3aed;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-muted: #737373;
+            --border: #262626;
+            --gradient-1: linear-gradient(135deg, #ff0050 0%, #7c3aed 100%);
+            --gradient-2: linear-gradient(135deg, #00d4ff 0%, #0096ff 100%);
+            --gradient-3: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --blur: blur(16px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fade-left {
+            animation: fadeInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-fade-right {
+            animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 0, 80, 0.1) 0%, transparent 50%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23262626" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 60%; left: 80%; animation-delay: 1s; }
+        .floating-element:nth-child(3) { top: 80%; left: 20%; animation-delay: 2s; }
+        .floating-element:nth-child(4) { top: 40%; left: 90%; animation-delay: 1.5s; }
+        .floating-element:nth-child(5) { top: 10%; left: 70%; animation-delay: 0.5s; }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            backdrop-filter: var(--blur);
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.25rem, 3vw, 2rem);
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 20px rgba(255, 0, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 0, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+        }
+
+        /* Sections */
+        .section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .section-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* About Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .about-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .about-visual {
+            position: relative;
+            height: 500px;
+            background: var(--gradient-3);
+            border-radius: 2rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tech-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .tech-icon:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .tech-icon:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+        .tech-icon:nth-child(2) { top: 30%; right: 20%; animation-delay: 0.2s; }
+        .tech-icon:nth-child(3) { bottom: 30%; left: 15%; animation-delay: 0.4s; }
+        .tech-icon:nth-child(4) { bottom: 20%; right: 25%; animation-delay: 0.6s; }
+        .tech-icon:nth-child(5) { top: 50%; left: 50%; animation-delay: 0.8s; transform: translate(-50%, -50%); }
+
+        /* Services Section */
+        .services {
+            background: var(--bg-secondary);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-1);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Model Viewer Sections (with right alignment) */
+        .model-viewer-section {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 4rem 0;
+        }
+
+        .model-viewer-container-inner {
+            display: flex;
+            flex-direction: row; /* Default: text left, model right */
+            align-items: center;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* For alternating layout: model left, text right */
+        .model-viewer-section.alt .model-viewer-container-inner {
+            flex-direction: row-reverse;
+        }
+
+        .model-viewer-text-content {
+            flex: 1;
+            padding-right: 2rem; /* Spacing between text and model */
+        }
+        
+        .model-viewer-section.alt .model-viewer-text-content {
+            padding-left: 2rem;
+            padding-right: 0;
+            text-align: right; /* Align text to the right when model is on the left */
+        }
+
+        .model-viewer-text-content h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .model-viewer-text-content p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        model-viewer {
+            flex: 1; /* Allows model viewer to take up available space */
+            min-width: 300px; /* Minimum width for the model */
+            height: 450px; /* Increased height for better view */
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            --poster-color: var(--bg-primary); /* Color de fondo mientras carga el modelo */
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: var(--gradient-1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M0 10h20M10 0v20" stroke="%23ffffff" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>');
+        }
+
+        .cta-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .cta p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: none;
+        }
+
+        .cta .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-info {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: var(--bg-primary);
+            transform: translateX(8px);
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-1);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .contact-details h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-details p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .contact-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 0, 80, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .model-viewer-container-inner {
+                flex-direction: column; /* Stack vertically on smaller screens */
+                text-align: center;
+            }
+            .model-viewer-text-content {
+                padding-right: 0;
+                order: 1; /* Puts text above the model */
+            }
+            .model-viewer-section.alt .model-viewer-container-inner {
+                flex-direction: column; /* Stack vertically */
+            }
+            .model-viewer-section.alt .model-viewer-text-content {
+                padding-left: 0;
+                text-align: center; /* Center text when stacked */
+            }
+            model-viewer {
+                order: 2; /* Puts model below the text */
+                max-width: 500px; /* Limit width to look better on smaller screens */
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .about-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 4rem 0;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-visual {
+                height: 300px;
+            }
+
+            .tech-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .nav {
+                padding: 1rem;
+            }
+
+            .hero-content {
+                padding: 0 1rem;
+            }
+
+            .service-card,
+            .contact-info,
+            .contact-form {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <nav class="nav">
+            <a href="#" class="logo">SR Digital Pro</a>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+        </nav>
+    </header>
+
+    <section class="hero" id="inicio">
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        
+        <div class="hero-content animate-fade-up">
+            <div class="hero-badge">
+                <span>🚀</span>
+                <span>100% Mexicana</span>
+            </div>
+            <h1 class="hero-title">Transformación Digital</h1>
+            <p class="hero-subtitle">Potenciamos tu negocio con soluciones tecnológicas innovadoras y un equipo de expertos comprometidos con tu éxito</p>
+            <div class="hero-buttons">
+                <a href="#contacto" class="btn btn-primary">
+                    <span>Comenzar Proyecto</span>
+                    <span>→</span>
+                </a>
+                <a href="#servicios" class="btn btn-secondary">
+                    <span>Ver Servicios</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section model-viewer-section">
+        <div class="model-viewer-container-inner">
+            <div class="model-viewer-text-content animate-fade-left">
+                <h2>Visualiza el Futuro: Tu Setup Ideal</h2>
+                <p>Explora en 3D cómo la eficiencia y la estética se unen en un espacio de trabajo diseñado para maximizar tu productividad. Haz zoom, gira y personaliza tu visión del éxito.</p>
+            </div>
+            <model-viewer
+                src="dream_computer_setup.glb"
+                alt="Un setup de computadora ideal en 3D"
+                ar
+                camera-controls
+                auto-rotate
+                autoplay
+                shadow-intensity="1"
+                class="animate-fade-right"
+            ></model-viewer>
+        </div>
+    </section>
+
+    <section class="section" id="nosotros">
+        <div class="container">
+            <div class="section-header animate-fade-up">
+                <div class="section-badge">Quiénes Somos</div>
+                <h2 class="section-title">Expertos en Innovación Tecnológica</h2>
+                <p class="section-description">Una empresa 100% mexicana dedicada a transformar negocios a través de la tecnología</p>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-content animate-fade-left">
+                    <h3>Nuestra Misión</h3>
+                    <p>Ayudamos a empresas y personas a entender la importancia de la transformación digital, ofreciendo herramientas que mejoran la eficiencia, digitalizan procesos y optimizan recursos.</p>
+                    
+                    <p>Ponemos a tu disposición nuestra experiencia y un conjunto integral de soluciones tecnológicas que nos convierten en tu mejor aliado estratégico.</p>
+
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">5+</span>
+                            <span class="stat-label">Años de Experiencia</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100+</span>
+                            <span class="stat-label">Proyectos Exitosos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-visual animate-fade-right">
+                    <div class="tech-icon animate-float">💻</div>
+                    <div class="tech-icon animate-float">🔧</div>
+                    <div class="tech-icon animate-float">🌐</div>
+                    <div class="tech-icon animate-float">🔒</div>
+                    <div class="tech-icon animate-float">⚡</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section model-viewer-section alt">
+        <div class="model-viewer-container-inner">
+            <div class="model-viewer-text-content animate-fade-right">
+                <h2>Potencia en Cada Pixel: Conoce Nuestra PC Gaming</h2>
+                <p>Adéntrate en el rendimiento sin igual. Esta PC gaming 3D interactiva te muestra la ingeniería detrás de una experiencia de juego de élite. Gira, acerca y admira cada detalle.</p>
+            </div>
+            <model-viewer
+                src="gaming-pc.glb"
+                alt="Una potente PC gaming en 3D"
+                ar
+                camera-controls
+                auto-rotate
+                autoplay
+                shadow-intensity="1"
+                class="animate-fade-left"
+            ></model-viewer>
+        </div>
+    </section>
+
+    <section class="section services" id="servicios">
+        <div class="container">
+            <div class="section-header animate-fade-up">
+                <div class="section-badge">Servicios</div>
+                <h2 class="section-title">Soluciones Completas para tu Empresa</h2>
+                <p class="section-description">Ofrecemos un ecosistema integral de servicios tecnológicos diseñados para impulsar tu crecimiento</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card animate-fade-up">
+                    <div class="service-icon">🏢</div>
+                    <h3>Servicio Empresarial</h3>
+                    <p>Póliza integral con gestión, control y administración de equipos, inventario completo de software y hardware, plus mantenimiento preventivo periódico para máximo rendimiento.</p>
+                </div>
+
+                <div class="service-card animate-fade-up">
+                    <div class="service-icon">💾</div>
+                    <h3>Desarrollo de Software</h3>
+                    <p>Creación de software personalizado enfocado en automatización, control y gestión empresarial. Desarrollamos tu ventaja competitiva digital.</p>
+                </div>
+
+                <div class="service-card animate-fade-up">
+                    <div class="service-icon">🔗</div>
+                    <h3>Cableado Estructural</h3>
+                    <p>Diseño e implementación de proyectos de infraestructura: cableado estructurado, eléctrico, fibra óptica con mantenimiento y conectividad de última generación.</p>
+                </div>
+
+                <div class="service-card animate-fade-up">
+                    <div class="service-icon">🔧</div>
+                    <h3>Reparaciones Especializadas</h3>
+                    <p>Taller con técnicos certificados para diagnóstico y reparación de equipos de cómputo. Garantizamos el funcionamiento óptimo de tu tecnología.</p>
+                </div>
+
+                <div class="service-card animate-fade-up">
+                    <div class="service-icon">🛒</div>
+                    <h3>Venta de Equipos</h3>
+                    <p>Proveemos tecnología de vanguardia, desde equipos de cómputo hasta componentes especializados y periféricos, asegurando calidad y soporte.</p>
+                </div>
+
+                <div class="service-card animate-fade-up">
+                    <div class="service-icon">☁️</div>
+                    <h3>Servicios en la Nube</h3>
+                    <p>Migración y gestión de infraestructura en la nube, respaldo de datos, seguridad, y optimización de costos para una operación ágil y escalable.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section cta">
+        <div class="container">
+            <div class="cta-content animate-fade-up">
+                <h2>¿Listo para impulsar tu negocio?</h2>
+                <p>Contáctanos hoy mismo y descubre cómo SR Digital Pro puede ser tu aliado estratégico en la transformación digital.</p>
+                <a href="#contacto" class="btn btn-secondary">
+                    <span>¡Hablemos!</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contacto">
+        <div class="container">
+            <div class="section-header animate-fade-up">
+                <div class="section-badge">Contacto</div>
+                <h2 class="section-title">Estamos Aquí para Ayudarte</h2>
+                <p class="section-description">Envíanos un mensaje o contáctanos directamente. ¡Tu éxito digital comienza aquí!</p>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-info animate-fade-left">
+                    <h3>Nuestra Información</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-details">
+                            <h4>Dirección</h4>
+                            <p>Calle Falsa 123, Colonia Innovación, C.P. 45678, Guadalajara, Jalisco, México</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-details">
+                            <h4>Email</h4>
+                            <p>contacto@srdigitalpro.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div class="contact-details">
+                            <h4>Teléfono</h4>
+                            <p>+52 33 1234 5678</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form animate-fade-right">
+                    <form action="#" method="POST">
+                        <div class="form-group">
+                            <label for="name">Nombre Completo</label>
+                            <input type="text" id="name" name="name" placeholder="Tu Nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="tu.correo@ejemplo.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Asunto</label>
+                            <input type="text" id="subject" name="subject" placeholder="Ej: Consulta de Servicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Tu Mensaje</label>
+                            <textarea id="message" name="message" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <span>Enviar Mensaje</span>
+                            <span>🚀</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 SR Digital Pro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add scrolled class to header on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle (if needed for a full menu implementation)
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active'); // You would need a CSS class 'active' to show/hide the menu
+        });
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running'; // Start animation on intersection
+                    entry.target.classList.add('show-animation'); // Add a class to trigger animations
+                } else {
+                    // Optional: pause animation when out of view, or let it continue
+                    // entry.target.style.animationPlayState = 'paused'; 
+                    entry.target.classList.remove('show-animation');
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        });
+
+        document.querySelectorAll('.animate-fade-up, .animate-fade-left, .animate-fade-right, .model-viewer-section model-viewer').forEach(element => {
+            element.style.opacity = '0'; // Hide elements initially
+            // No need to pause 'model-viewer' animations as 'autoplay' and 'auto-rotate' handle continuous playback
+            observer.observe(element);
+        });
+
+    </script>
+</body>
+</html>
